@@ -23,7 +23,7 @@ class Logger:
 
     _instance = None
 
-    def __new__(cls):
+    def __new__(cls, log_folder_path=None):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
             cls.debug_mode = True
@@ -31,7 +31,13 @@ class Logger:
                 "%(asctime)s — %(name)s — %(levelname)s — %(message)s"
             )
             cls.log_file = "application_log_file.log"
-            cls.log_folder = tempfile.mkdtemp()
+            if log_folder_path:
+                cls.log_folder = log_folder_path
+                if not os.path.exists(cls.log_folder):
+                    os.mkdir(cls.log_folder)
+            else:
+                # create temp folder for log files
+                cls.log_folder = tempfile.mkdtemp()
             print(f"Log folder: {cls.log_folder}")
             if os.path.exists(cls.log_folder):
                 shutil.rmtree(cls.log_folder)   
